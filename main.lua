@@ -112,8 +112,8 @@ function tick(dt)
         elseif(mod.name == "Infinite Ammo" and mod.enabled == true) then
             SetInt("game.tool."..GetString("game.player.tool")..".ammo", 99999)
         elseif(mod.name == "Instant Win" and mod.enabled == true) then
-            SetInt("level.clearedprimary", 100)
-            SetInt("level.clearedsecondary", 100)
+            SetInt("level.clearedprimary", GetInt("level.primary"))
+            SetInt("level.clearedsecondary", GetInt("level.secondary"))
             SetString("level.state", "win")
         elseif(mod.name == "Extra Speed" and mod.enabled == true) then
 			if(GetPlayerVehicle() == 0 and InputDown("space") == false) then
