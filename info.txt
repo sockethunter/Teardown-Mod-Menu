@@ -1,0 +1,4 @@
+name = Teardown-Mod-Menu
+author = Mert246
+description = Simple modular admin menu for teardown based on teardown-tool-menu by Mjtlittle.
+tags = Gameplay
