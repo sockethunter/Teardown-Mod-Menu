@@ -105,62 +105,77 @@ function tick(dt)
 
     -- player mods
     for i, mod in ipairs(all_player_mods) do
-        if(mod.name == "Godmode" and mod.enabled == true) then
-            SetPlayerHealth(1)
-        elseif(mod.name == "Firewalk" and mod.enabled == true) then
-            SpawnFire(VecAdd(GetPlayerTransform().pos, Vec(0,0,0)))
-            SpawnParticle("fire", VecAdd(GetPlayerTransform().pos, Vec(0,0,0)), Vec(0, 1, 0), 1, 1)
-        elseif(mod.name == "Fly" and mod.enabled == true) then
-		    if InputDown("space") then
-                JumpBoost()
+        if(mod.name == "Godmode") then
+            if (mod.enabled == true) then
+                SetPlayerHealth(1)
             end
+            SetBool(string.format('savegame.mod.%s', mod.name), mod.enabled)
+        elseif(mod.name == "Firewalk") then
+            if (mod.enabled == true) then
+                SpawnFire(VecAdd(GetPlayerTransform().pos, Vec(0,0,0)))
+                SpawnParticle("fire", VecAdd(GetPlayerTransform().pos, Vec(0,0,0)), Vec(0, 1, 0), 1, 1)
+            end
+            SetBool(string.format('savegame.mod.%s', mod.name), mod.enabled)
+        elseif(mod.name == "Fly") then
+            if (mod.enabled == true) then
+                if InputDown("space") then
+                    JumpBoost()
+                end
+            end
+            SetBool(string.format('savegame.mod.%s', mod.name), mod.enabled)
         elseif(mod.name == "Unlimited Mission Time" and mod.enabled == true) then
             SetFloat("level.alarmtimer", 60)
-        elseif(mod.name == "Infinite Ammo" and mod.enabled == true) then
-            SetInt("game.tool."..GetString("game.player.tool")..".ammo", 99999)
+        elseif(mod.name == "Infinite Ammo") then
+            if (mod.enabled == true) then
+                SetInt("game.tool."..GetString("game.player.tool")..".ammo", 99999)
+            end
+            SetBool(string.format('savegame.mod.%s', mod.name), mod.enabled)
         elseif(mod.name == "Instant Win" and mod.enabled == true) then
             SetInt("level.clearedprimary", GetInt("level.primary"))
             SetInt("level.clearedsecondary", GetInt("level.secondary"))
             SetString("level.state", "win")
-        elseif(mod.name == "Extra Speed" and mod.enabled == true) then
-			if(GetPlayerVehicle() == 0 and InputDown("space") == false) then
-                local pt = GetPlayerTransform()
-                local d = TransformToParentVec(pt, Vec(0, 0, 0))
-                local pvel = GetPlayerVelocity()
-                local wboost = false
-                local sboost = false
-                local aboost = false
-                local dboost = false
-                if InputDown("w") and wboost == false then
-                    d = TransformToParentVec(pt, Vec(0, 0, -speed))
-                    pvel = VecAdd(pvel, d)
-                    SetPlayerVelocity(pvel)
-                    wboost = true
-                elseif InputReleased("w") then
-                    wboost = false
-                elseif InputDown("s") and sboost == false then
-                    d = TransformToParentVec(pt, Vec(0, 0, speed))
-                    pvel = VecAdd(pvel, d)
-                    SetPlayerVelocity(pvel)
-                    sboost = true
-                elseif InputReleased("s") then
-                    sboost = false
-                elseif InputDown("a") and aboost == false then
-                    d = TransformToParentVec(pt, Vec(-speed, 0, 0))
-                    pvel = VecAdd(pvel, d)
-                    SetPlayerVelocity(pvel)
-                    aboost = true
-                elseif InputReleased("a") then
-                    aboost = false
-                elseif InputDown("d") and dboost == false then
-                    d = TransformToParentVec(pt, Vec(speed, 0, 0))
-                    pvel = VecAdd(pvel, d)
-                    SetPlayerVelocity(pvel)
-                    dboost = true
-                elseif InputReleased("d") then
-                    dboost = false
+        elseif(mod.name == "Extra Speed") then
+            if (mod.enabled == true) then
+                if(GetPlayerVehicle() == 0 and InputDown("space") == false) then
+                    local pt = GetPlayerTransform()
+                    local d = TransformToParentVec(pt, Vec(0, 0, 0))
+                    local pvel = GetPlayerVelocity()
+                    local wboost = false
+                    local sboost = false
+                    local aboost = false
+                    local dboost = false
+                    if InputDown("w") and wboost == false then
+                        d = TransformToParentVec(pt, Vec(0, 0, -speed))
+                        pvel = VecAdd(pvel, d)
+                        SetPlayerVelocity(pvel)
+                        wboost = true
+                    elseif InputReleased("w") then
+                        wboost = false
+                    elseif InputDown("s") and sboost == false then
+                        d = TransformToParentVec(pt, Vec(0, 0, speed))
+                        pvel = VecAdd(pvel, d)
+                        SetPlayerVelocity(pvel)
+                        sboost = true
+                    elseif InputReleased("s") then
+                        sboost = false
+                    elseif InputDown("a") and aboost == false then
+                        d = TransformToParentVec(pt, Vec(-speed, 0, 0))
+                        pvel = VecAdd(pvel, d)
+                        SetPlayerVelocity(pvel)
+                        aboost = true
+                    elseif InputReleased("a") then
+                        aboost = false
+                    elseif InputDown("d") and dboost == false then
+                        d = TransformToParentVec(pt, Vec(speed, 0, 0))
+                        pvel = VecAdd(pvel, d)
+                        SetPlayerVelocity(pvel)
+                        dboost = true
+                    elseif InputReleased("d") then
+                        dboost = false
+                    end
                 end
             end
+            SetBool(string.format('savegame.mod.%s', mod.name), mod.enabled)
         end
     end
 end
@@ -516,9 +531,15 @@ function get_tool_data(tool_id)
 end
 
 function get_mod_data(mod)
+    local is_enabled = false
+    
+    if (HasKey(string.format('savegame.mod.%s', mod))) then
+        is_enabled = GetBool(string.format('savegame.mod.%s', mod))
+    end
+    
     local data = {
         name = mod,
-        enabled = false
+        enabled = is_enabled
     }
     return data
 end
