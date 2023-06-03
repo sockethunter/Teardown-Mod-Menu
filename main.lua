@@ -13,7 +13,14 @@ local basegame_tool_ids = {
     'pipebomb',
     'gun',
     'bomb',
-    'rocket'
+    'wire',
+    'rocket',
+    'booster',
+    'leafblower',
+    'turbo',
+    'explosive',
+    'rifle',
+    'steroid'
 }
 
 local player_mods = {
