@@ -1,6 +1,8 @@
 # Teardown-Mod-Menu
 Simple modular mod menu for Teardown based on <a href=https://github.com/Mjtlittle/teardown-tool-menu>teardown-tool-menu by Mjtlittle</a>.
 
+You can find this on the <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2420847131">Steam Workshop</a>.
+
 <b>This mod menu does not add any tools.</b>
 
 ## Features
