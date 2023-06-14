@@ -33,8 +33,6 @@ local player_mods = {
     'Unlimited Mission Time'
 }
 
-local speed = 0.6
-
 function init()
     if not (GetString("savegame.mod.keybind") == "") then
         menu_key = GetString("savegame.mod.keybind")
@@ -117,10 +115,43 @@ function tick(dt)
             end
             SetBool(string.format('savegame.mod.%s', mod.name), mod.enabled)
         elseif(mod.name == "Fly") then
-            if (mod.enabled == true) then
-                if InputDown("space") then
-                    JumpBoost()
+            if (GetPlayerVehicle() == 0 and mod.enabled == true) then
+                    local flySpeed = 0.3
+                    local speed = 0.5
+                    local pt = GetPlayerTransform()
+                    local d = TransformToParentVec(pt, Vec(0, 0, 0))
+                    local vel = GetPlayerVelocity()
+                    local wboost = false
+                    local sboost = false
+                    local aboost = false
+                    local dboost = false
+                    if InputDown("w") and wboost == false then
+                        d = TransformToParentVec(pt, Vec(0, 0, -speed))
+                        wboost = true
+                    elseif InputReleased("w") then
+                        wboost = false
+                    elseif InputDown("s") and sboost == false then
+                        d = TransformToParentVec(pt, Vec(0, 0, speed))
+                        sboost = true
+                    elseif InputReleased("s") then
+                        sboost = false
+                    elseif InputDown("a") and aboost == false then
+                        d = TransformToParentVec(pt, Vec(-speed, 0, 0))
+                        aboost = true
+                    elseif InputReleased("a") then
+                        aboost = false
+                    elseif InputDown("d") and dboost == false then
+                        d = TransformToParentVec(pt, Vec(speed, 0, 0))
+                        dboost = true
+                    elseif InputReleased("d") then
+                        dboost = false
+                    end
+                    flyVec = Vec(0, flySpeed, 0)
+                    vel = VecAdd(vel, d)
+                    if InputDown("space") then
+                    vel = VecAdd(vel, flyVec)
                 end
+                    SetPlayerVelocity(vel)
             end
             SetBool(string.format('savegame.mod.%s', mod.name), mod.enabled)
         elseif(mod.name == "Unlimited Mission Time" and mod.enabled == true) then
@@ -137,6 +168,7 @@ function tick(dt)
         elseif(mod.name == "Extra Speed") then
             if (mod.enabled == true) then
                 if(GetPlayerVehicle() == 0 and InputDown("space") == false) then
+                    local speed = 0.6
                     local pt = GetPlayerTransform()
                     local d = TransformToParentVec(pt, Vec(0, 0, 0))
                     local pvel = GetPlayerVelocity()
@@ -608,13 +640,4 @@ function load_favorite_tools()
             all_tools[index].favorite = true
         end
     end
-end
-
-function JumpBoost()
-	local pt = GetPlayerTransform()
-	local d = TransformToParentVec(pt, Vec(0, 5, -0.5))
-	local vel = GetPlayerVelocity()
-	vel[2] = 0
-	vel = VecAdd(vel, d)
-	SetPlayerVelocity(vel)
 end
