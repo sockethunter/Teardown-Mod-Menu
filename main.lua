@@ -115,42 +115,41 @@ function tick(dt)
             end
             SetBool(string.format('savegame.mod.%s', mod.name), mod.enabled)
         elseif(mod.name == "Fly") then
-            if (GetPlayerVehicle() == 0 and mod.enabled == true) then
-                    local flySpeed = 0.3
+            if (GetPlayerVehicle() == 0 and mod.enabled == true and InputDown("space") == true) then
+                    local flySpeed = 5
                     local speed = 0.5
                     local pt = GetPlayerTransform()
                     local d = TransformToParentVec(pt, Vec(0, 0, 0))
-                    local vel = GetPlayerVelocity()
+
                     local wboost = false
                     local sboost = false
                     local aboost = false
                     local dboost = false
+
                     if InputDown("w") and wboost == false then
-                        d = TransformToParentVec(pt, Vec(0, 0, -speed))
+                        d = TransformToParentVec(pt, Vec(0, flySpeed, -speed))
                         wboost = true
                     elseif InputReleased("w") then
                         wboost = false
                     elseif InputDown("s") and sboost == false then
-                        d = TransformToParentVec(pt, Vec(0, 0, speed))
+                        d = TransformToParentVec(pt, Vec(0, flySpeed, speed))
                         sboost = true
                     elseif InputReleased("s") then
                         sboost = false
                     elseif InputDown("a") and aboost == false then
-                        d = TransformToParentVec(pt, Vec(-speed, 0, 0))
+                        d = TransformToParentVec(pt, Vec(-speed, flySpeed, 0))
                         aboost = true
                     elseif InputReleased("a") then
                         aboost = false
                     elseif InputDown("d") and dboost == false then
-                        d = TransformToParentVec(pt, Vec(speed, 0, 0))
+                        d = TransformToParentVec(pt, Vec(speed, flySpeed, 0))
                         dboost = true
                     elseif InputReleased("d") then
                         dboost = false
                     end
-                    flyVec = Vec(0, flySpeed, 0)
+                    local vel = GetPlayerVelocity()
+                    vel[2] = 0
                     vel = VecAdd(vel, d)
-                    if InputDown("space") then
-                    vel = VecAdd(vel, flyVec)
-                end
                     SetPlayerVelocity(vel)
             end
             SetBool(string.format('savegame.mod.%s', mod.name), mod.enabled)
