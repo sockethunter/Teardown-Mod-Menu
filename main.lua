@@ -119,7 +119,7 @@ function tick(dt)
                     local flySpeed = 5
                     local speed = 0.5
                     local pt = GetPlayerTransform()
-                    local d = TransformToParentVec(pt, Vec(0, 0, 0))
+                    local d = TransformToParentVec(pt, Vec(0, flySpeed, 0))
 
                     local wboost = false
                     local sboost = false
